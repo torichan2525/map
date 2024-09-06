@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>leaflet light | torichan.net</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+</head>
+
+<body onload="init()">
+    <div id="mapid" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+  <script>
+    //zoomControl true でズームボタンを表示
+      var map = L.map('mapid', { 
+        zoomControl: true,
+        messagebox: true,
+        preferCanvas:true, //trueとし、Canvasレンダラーを選択
+       });
+      var mpoint = [35.8627, 139.6072];
+      map.setView(mpoint, 10);
+
+//openstreetmap
+var OpenStreetMap_Mapnik = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  minZoom: 2,
+	maxZoom: 19,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+
+
+
+
+
+//最初の"”に入る名前は右上の選択肢に表示される名前
+//その次は上で指定したvarに続く文字
+
+    var baseMaps = {
+      "OpenSreetMap" :OpenStreetMap_Mapnik,
+    };
+
+
+
+    //下記の"jawgosm"で最初に表示する地図を決定
+    L.control.layers(baseMaps).addTo(map);
+    OpenStreetMap_Mapnik.addTo(map);
+
+//ピンを表示
+//コピペで使用
+
+
+    //座標の位置にマーカーを追加する。
+    var marker = L.marker([35.688544,139.764692]).addTo(map);
+    //上のマーカーにポップアップを追加する。
+    marker.bindPopup("ポップアップの内容").openPopup();
+
+    //座標の位置にマーカーを追加する。
+    var marker = L.marker([35.688544,139.23514]).addTo(map);
+    //上のマーカーにポップアップを追加する。
+    marker.bindPopup(
+        "リンクテキスト前の文字<br><a href=#>リンクテキスト</a><br>リンクテキスト後の文字 "
+    ).openPopup();
+
+//GB350.com/contenttitle
+    var marker = L.marker([35.7659,139.23514]).addTo(map);
+    marker.bindPopup("<b>Hello world!</b><br>popup demo.").openPopup();
+
+//    var popup = L.popup()
+//  .setLatLng([35.68582070442307, 139.48854879455754])
+//  .setContent("")
+//  .openOn(map);
+
+          //ポップアップする文字（HTML可、ここでは画像を表示）
+          var sucontents = "埼玉大学です<br><img src='https://ktgis.net/service/leafletlearn/su.jpg' width='300' height='200'>"
+      //ポップアップオブジェクトを作成
+      var popup1 = L.popup({ maxWidth: 550 }).setContent(sucontents);
+      var popup2 = L.popup().setContent("桜区役所です");
+      var popup3 = L.popup().setContent("Test"); //title
+      var popupname = L.popup().setContent("content"); //title
+      var jihanki = L.popup().setContent("<b>中古タイヤ市場 相模原店 自販機コーナー</b><br><a href=#>リンクテキスト</a><br>リンクテキスト後の文字<img src='https://torichan.net/img/jihanki.jpg' alt='レトロ自販機' width='300' height='200'>"); //レトロ自販機
+      var nagaoya = L.popup().setContent("<b>山中湖 - 長池親水公園</b><br><a href=#>リンクテキスト</a><br>リンクテキスト後の文字<img src='https://torichan.net/img/yamanakako.jpg' alt='山中湖' width='300' height='200'>"); //山中湖
+      var kawahashi = L.popup().setContent("<b>河口湖大橋</b><br><a href=#>リンクテキスト</a><br>リンクテキスト後の文字<img src='https://placehold.co/600x400' alt='sample -image' width='300' height='200'>"); //河口湖大橋
+
+
+      //マーカーにポップアップを紐付けする。同時にbindTooltipでツールチップも追加
+      //, {draggable: true } でピンを動かすことができるようにする
+      //.bindTooltip要素を削除すればホバー時の説明が消える
+      L.marker(mpoint, { draggable: true }).bindPopup(popup1).bindTooltip("埼玉大学").addTo(map);
+      L.marker([35.8561, 139.6098]).bindPopup(popup2).bindTooltip("桜区役所").addTo(map);
+      L.marker([35.8561, 139.4362]).bindPopup(popup3).bindTooltip("test").addTo(map);
+      L.marker([35.8561, 139.2372545]).bindPopup(popupname).bindTooltip("test").addTo(map);
+      L.marker([35.54265642601169, 139.38167351611008]).bindPopup(jihanki).bindTooltip("懐かしの自販機").addTo(map);
+      L.marker([35.427042853462986, 138.87119222819373]).bindPopup(nagaoya).bindTooltip("山中湖").addTo(map);
+      L.marker([35.511528931711325, 138.76438216704796]).bindPopup(kawahashi).bindTooltip("河口湖大橋").addTo(map);
+
+  </script>
+</body>
+</html>

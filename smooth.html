@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet SmoothWheelZoom Example</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="///torichan.netlify.app/css/leaflet-navi.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://torichan.netlify.app/css/plugin.css"/>
+    <script src="//torichan.netlify.app/js/plugin.js"></script>
+    <style>
+        #map { 
+            position:absolute;top:0;left:0;right:0;bottom:0;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="map"></div>
+
+
+    
+    <script>
+      var map = L.map('map', {
+        scrollWheelZoom: false,
+        smoothWheelZoom: true,
+        smoothSensitivity: 1,
+        })
+        var mpoint = [35.54265642601169, 139.38167351611008];
+        map.setView(mpoint, 8);
+
+        //・・・・・・・・マップ切り替えボタン等・・・・・・・・・//
+
+
+//openstreetmap
+var OpenStreetMap_Mapnik = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  minZoom: 2,
+	maxZoom: 19,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+//gsi
+    var gsi = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+      minZoom: 2,
+      maxZoom: 18,
+      attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+
+//gsiphoto
+    var pho = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+      minZoom: 2,
+      maxZoom: 18,
+	attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+});
+
+
+var baseMaps = {
+      "OpenSreetMap(Mapnic)" :OpenStreetMap_Mapnik,
+      "地理院地図" : gsi,
+      "航空写真" :pho,
+    };
+
+    L.control.layers(baseMaps).addTo(map);
+    OpenStreetMap_Mapnik.addTo(map);
+
+        //・・・・・・・・マップ切り替えボタン等・・・・・・・・・//
+
+
+
+        //・・・・・・・・・・・ピン追加・・・・・・・・・・・・・//
+        //var marker = L.marker([35.6895, 139.6917]).addTo(map);
+        //marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+        //marker.bindTooltip("ここにホバー時に表示したい文字を入れてください",{
+        //    permanent: false,  // trueにすると常に表示されます
+        //    direction: 'right', // ツールチップの表示位置（'top', 'bottom', 'left', 'right', 'center'）
+        //    opacity: 0.7,      // ツールチップの不透明度
+        //});
+
+
+
+        var marker = L.marker([35.6895, 139.6917]).addTo(map);
+        marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+        marker.bindTooltip("ここにホバー時に表示したい文字を入れてください",{
+            opacity: 0.7,
+        });
+
+
+        var marker = L.marker([35.54265642601169, 139.38167351611008]).addTo(map);
+marker.bindPopup("<b>Hello!</b><br>I am a popup.");
+marker.bindTooltip("ホバー時のテキスト", {
+    opacity: 0.7,       // ツールチップの不透明度
+});
+
+
+        //・・・・・・・・・・・ピン追加・・・・・・・・・・・・・//
+
+
+
+        
+        //・・・・・・・・・・・・追加プラグイン・・・・・・・・・・・・・//
+
+    //ホームポジションボタン　画像URL
+    L.easyButton('<img src="//torichan.net/osm/map/home-icon.svg" alt="home icon" >', function(){
+       var antarctica = [37.76277414136018, 137.61539552286214];
+        map.setView(mpoint, 5);
+    
+       map.setView(antarctica);}).addTo(map);
+
+         //leaflet-control-window
+        var options = {
+          title:'使い方(<a href="//map.torichan.net/use/" target="_blank" >リンク</a>）',
+          content:'マップ内に表示されているピンをクリックするとポップアップが表示され、ピンの説明が出てきます。',
+          modal: false,
+          position:'bottomRight' // 'center', 'top', 'topRight', 'right', 'bottomRight', 'bottom', 'bottomLeft', 'left', 'topLeft'
+        };
+        var win =  L.control.window(map, options).show();
+ 
+
+
+        //ピンの場所を表示するやつ
+        var edgeMarkerLayer = L.edgeMarker({
+          findEdge : function(map){return L.bounds([0,0],map.getSize());},
+      icon: L.icon({ // style markers
+          iconUrl : '//torichan.net/img/edge-arrow-marker-black.png'  ,
+          clickable: true,
+          iconSize: [48,48],
+          iconAnchor: [24, 24],
+          rotateIcons: true,
+          layerGroup: null,
+      })
+    }).addTo(map);
+
+
+    //スケールを追加（マイルを非表示，スケールの幅を変更）
+L.control.scale({ 
+  imperial:false,
+  updateWhenIdle:true,
+}).addTo(map); 
+
+
+
+        // sub-toolbar
+        var marker;
+        var TbSubAction = L.Toolbar2.Action.extend({
+            initialize: function(map, myAction) {
+                this.map = map;
+                this.myAction = myAction;
+                L.Toolbar2.Action.prototype.initialize.call(this);
+            },
+            addHooks: function() {
+                this.myAction.disable();
+            }
+        });
+        var Contact = TbSubAction.extend({
+           options: {
+                toolbarIcon: {
+                    html: '<i class="fa fa-envelope" aria-hidden="true"></i>',
+                    tooltip: 'Contact'
+                }
+            },
+            addHooks: function () {
+    const popup = new CustomPopup();
+    popup.show('https://tto.jp/contact');
+    TbSubAction.prototype.addHooks.call(this);
+}
+        });
+        var about = TbSubAction.extend({
+            options: {
+                toolbarIcon: {
+                    html: '<i class="fa fa-question"></i>',
+                    tooltip: 'About'
+                }
+            },
+                addHooks: function () {
+    const popup = new CustomPopup();
+    popup.show('https://map.torichan.net/about/');
+    TbSubAction.prototype.addHooks.call(this);
+}
+        });
+        var Home = TbSubAction.extend({
+            options: {
+                toolbarIcon: {
+                    html: '<i class="fas fa-home"></i>',
+                    tooltip: 'Home'
+                }
+            },
+                addHooks: function () {
+    const popup = new CustomPopup();
+    popup.show('https://torichan.net');
+    TbSubAction.prototype.addHooks.call(this);
+}
+        });
+        
+        var Cancel = TbSubAction.extend({
+            options: {
+                toolbarIcon: {
+                    html: '<i class="fas fa-times"></i>',
+                    tooltip: 'Cancel'
+                }
+            }
+        });
+        var TbMainAction = L.Toolbar2.Action.extend({
+            options: {
+                toolbarIcon: {
+                    className: 'fas fa-bars',
+                },
+                subToolbar: new L.Toolbar2({
+                    actions: [about, Contact, Home, Cancel]
+                })
+            }
+        });
+        new L.Toolbar2.Control({
+            position: 'topleft',
+            actions: [TbMainAction]
+        }).addTo(map);
+
+
+
+//・・・・・・・・・・・・追加プラグイン・・・・・・・・・・・・・//
+
+
+    </script>
+
+
+</body>
+</html>

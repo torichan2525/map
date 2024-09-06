@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>leaflet mapbox example</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/projektpro-leaflet-smoothwheelzoom@0.1.4/Leaflet.SmoothWheelZoom.js"></script>
+
+</head>
+<body onload="init()">
+  <div id="mapid" style="position:absolute;top:0;left:0;right:0;bottom:0;"></div>
+
+  <script>
+    var map = L.map('mapid', { zoomControl: true });
+    var mpoint = [35.8627, 139.6072];
+    map.setView(mpoint, 10);
+
+    
+    // Mapboxのタイルレイヤーを追加
+    var mapboxAccessToken = 'pk.eyJ1IjoidG9yaWNoYW4yNSIsImEiOiJjbHh3cHdoZ2gyZjN3MnNxd2w2aGEycHN6In0.ClWs5a0S9QkwU7v3VUTKsw'; // ここに自分のMapboxのアクセストークンを入れる
+    var mapboxTileUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
+
+    var mbx = L.tileLayer(mapboxTileUrl, {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 18,
+      id: 'mapbox/streets-v12', // MapboxのスタイルIDを指定
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoidG9yaWNoYW4yNSIsImEiOiJjbHh3cHdoZ2gyZjN3MnNxd2w2aGEycHN6In0.ClWs5a0S9QkwU7v3VUTKsw' // ここに自分のMapboxのアクセストークンを入れる
+    });
+
+    // 他の地図レイヤー
+    var jawgosm = L.tileLayer('https://tile.jawg.io/jawg-sunny/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
+      attribution: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      minZoom: 0,
+      maxZoom: 22,
+      accessToken: 'nSHaogI2OmBTPBkdiMuiYbTggpSBha9lGgtUHT9acTdTffWRYxDyiztvB29pdd7K'
+    });
+
+    var OpenStreetMap_Mapnik = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    });
+
+    var gsi = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+      attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+
+    var pho = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    });
+
+    var baseMaps = {
+      "OpenStreetMap (Jawg)": jawgosm,
+      "OpenStreetMap (Mapnik)": OpenStreetMap_Mapnik,
+      "地理院地図": gsi,
+      "航空写真": pho,
+      "MapBox": mbx,
+    };
+
+    L.control.layers(baseMaps).addTo(map);
+    mbx.addTo(map); // 最初に表示する地図をMapboxに設定
+
+    // マーカーの追加
+    var marker1 = L.marker([35.688544, 139.764692]).addTo(map);
+    marker1.bindPopup("埼玉大学です");
+
+    var marker2 = L.marker([35.688544, 139.23514]).addTo(map);
+    marker2.bindPopup("リンクテキスト前の文字<br><a href='#'>リンクテキスト</a><br>リンクテキスト後の文字");
+
+    var marker3 = L.marker([35.7659, 139.23514]).addTo(map);
+    marker3.bindPopup("<b>Hello world!</b><br>popup demo.");
+
+    // ポップアップの例
+    var popup = L.popup()
+      .setLatLng([35.68582070442307, 139.48854879455754])
+      .setContent("<b>使い方</b><br>マップ内に表示されているピンをクリックするとポップアップが表示され、ピンの説明が出てきます。")
+      .openOn(map);
+
+      
+  </script>
+</body>
+</html>
