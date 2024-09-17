@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S leaflet Map | torichan.net</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"/>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+<script src="//torichan.netlify.app/js/wp-plugin.js"></script>
+<link rel="stylesheet" href="https://torichan.netlify.app/css/wp-plugin.css"/>
+
+<style>
+    #mapid { 
+        width:100%; height:300px; z-index:0;
+    }
+</style><!-- 画面サイズを決定 -->
+
+
+</head>
+
+<body onload="init()">
+    <div id="mapid"></div>
+  <script>
+    //zoomControl true でズームボタンを表示
+
+      var map = L.map('mapid', {
+        scrollWheelZoom: false,
+        smoothWheelZoom: true,
+        smoothSensitivity: 1,
+        })
+        var mpoint = [35.54265642601169, 139.38167351611008];
+        map.setView(mpoint, 8);
+//openstreetmap
+var OpenStreetMap_Mapnik = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  minZoom: 2,
+	maxZoom: 19,
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+//gsi
+    var gsi = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png', {
+      minZoom: 2,
+      maxZoom: 18,
+      attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+    });
+
+//gsiphoto
+    var pho = L.tileLayer('https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', {
+      minZoom: 2,
+      maxZoom: 18,
+	attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+});
+
+
+
+
+//最初の"”に入る名前は右上の選択肢に表示される名前
+//その次は上で指定したvarに続く文字
+
+    var baseMaps = {
+      "OpenSreetMap" :OpenStreetMap_Mapnik,
+      "地理院地図" : gsi,
+      "航空写真" :pho,
+    };
+
+
+
+    //下記の"OpenStreetMap_Mapnik"で最初に表示する地図を決定
+    L.control.layers(baseMaps).addTo(map);
+    OpenStreetMap_Mapnik.addTo(map);
+
+//ピンを表示
+//コピペで使用
+
+
+//GB350.com/contenttitle
+
+
+//    var popup = L.popup()
+//  .setLatLng([35.68582070442307, 139.48854879455754])
+//  .setContent("")
+//  .openOn(map);
+
+var marker = L.marker([35.8561, 139.6098]).addTo(map);
+marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
+marker.bindTooltip("ここにホバー時に表示したい文字を入れてください");
+
+var marker = L.marker([35.54265642601169, 139.38167351611008]).addTo(map);
+marker.bindPopup("<b>中古タイヤ市場 相模原店 自販機コーナー</b><br><a href=#>リンクテキスト</a><br>リンクテキスト後の文字<img src='https://cdn.tto.jp/img/jihanki.jpg' alt='レトロ自販機' width='300' height='200'>");
+marker.bindTooltip("懐かしの自販機");
+
+
+
+
+//・・・・・・・・・・・・追加プラグイン・・・・・・・・・・・・・//
+
+    //ホームポジションボタン　画像URL
+    L.easyButton('<img src="//torichan.net/osm/map/home-icon.svg" alt="home icon" >', function(){
+       var antarctica = [37.76277414136018, 137.61539552286214];
+        map.setView(mpoint, 5);
+    
+       map.setView(antarctica);}).addTo(map);
+
+
+
+        //ピンの場所を表示するやつ
+        var edgeMarkerLayer = L.edgeMarker({
+          findEdge : function(map){return L.bounds([0,0],map.getSize());},
+      icon: L.icon({ // style markers
+          iconUrl : '//cdn.tto.jp/img/edge-arrow-marker-black.png'  ,
+          clickable: true,
+          iconSize: [48,48],
+          iconAnchor: [24, 24],
+          rotateIcons: true,
+          layerGroup: null,
+      })
+    }).addTo(map);
+
+
+    //スケールを追加（マイルを非表示，スケールの幅を変更）
+L.control.scale({ 
+  imperial:false,
+  updateWhenIdle:true,
+}).addTo(map); 
+
+
+
+//・・・・・・・・・・・・追加プラグイン・・・・・・・・・・・・・//
+
+  </script>
+</body>
+</html>
